@@ -54,5 +54,13 @@ func main() {
                         "message": "Update info successful",
                 })
 	})
+	r.GET("/update_qrcode", func(c *gin.Context){
+		path := c.Query("path")
+		cmd := exec.Command("python", "/home/pi/e-Paper/RaspberryPi_JetsonNano/python/examples/update_qrcode.py", path)	
+		cmd.Run()
+		c.JSON(200, gin.H{
+                        "message": "Update qrcode successful",
+                })
+	})
         r.Run() // listen and serve on 0.0.0.0:8080
 }

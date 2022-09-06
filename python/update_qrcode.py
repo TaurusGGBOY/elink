@@ -40,22 +40,7 @@ def main(argv):
         logging.info("1.Drawing on the Horizontal image...")
         Himage = Image.new('RGB', (epd.width, epd.height), 0xffffff)  # 255: clear the frame
         draw = ImageDraw.Draw(Himage)
-        for opt, arg in opts:
-           if opt == '--name':
-              draw.text((10, 160), arg, font = font30, fill = epd.BLACK)
-           elif opt == '--level':
-              draw.text((10, 200), arg, font = font30, fill = epd.ORANGE)
-           elif opt == '--pos':
-              draw.text((10, 240), arg, font = font30, fill = epd.GREEN)
-           elif opt == '--email':
-              draw.text((10, 280), arg, font = font30, fill = epd.BLUE)
-           elif opt == '--state':
-              draw.text((10, 320), arg, font = font30, fill = epd.RED)
-           elif opt == '--waitfor':
-              draw.text((10, 360), arg, font = font30, fill = epd.YELLOW)
-           elif opt == '--other':
-              draw.text((10, 400), arg.replace("_"," "), font = font30, fill = epd.BLACK)
-        draw.line((20, 50, 70, 100), fill = 0)
+        draw.line((20, 50, 70, 100), fill = epd.BLACK)
         draw.line((70, 50, 20, 100), fill = 0)
         draw.rectangle((20, 50, 70, 100), outline = 0)
         draw.line((165, 50, 165, 100), fill = 0)
@@ -64,11 +49,8 @@ def main(argv):
         draw.rectangle((80, 50, 130, 100), fill = 0)
         draw.chord((200, 50, 250, 100), 0, 360, fill = 0)
         
-        pic1 = Image.open('/home/pi/e-Paper/RaspberryPi_JetsonNano/python/pic/1.64inch-1.bmp').convert("RGB").pic1 = Image.open('/home/pi/e-Paper/RaspberryPi_JetsonNano/python/pic/1.64inch-1.bmp').convert("RGB").resize((50,50), Image.ANTIALIAS)
-        Himage.paste(pic1, (300, 50))
-        
-        draw.chord((300, 150, 340, 190), 0, 360, fill = epd.GREEN)
-        draw.chord((310, 160, 330, 180), 0, 360, fill = epd.WHITE)
+        pic1 = Image.open(sys.argv[1]).convert("RGB").resize((300,300), Image.ANTIALIAS)
+        Himage.paste(pic1, (100, 150))
         
         epd.display(epd.getbuffer(Himage))
         epd.sleep()
@@ -83,3 +65,4 @@ def main(argv):
 
 if __name__ == "__main__":
     main(sys.argv[1:])
+
