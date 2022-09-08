@@ -33,22 +33,29 @@ func main() {
                 })
 	})
 	r.GET("/update_info", func(c *gin.Context){
-		name := c.DefaultQuery("name", "ggb")
-		level := c.DefaultQuery("level", "SWE")
-		pos := c.DefaultQuery("pos", "4029")
-		email := c.DefaultQuery("email","854@qq.com")
-		state := c.DefaultQuery("state", "on-site")
-		waitfor := c.DefaultQuery("waitfor", "15min")
-		other := c.DefaultQuery("other", "life_is_nice")
+		icon := c.DefaultQuery("icon", "/home/pi/e-Paper/RaspberryPi_JetsonNano/python/pic/icon.png")
+		seat := c.DefaultQuery("seat", "2885")
+		name := c.DefaultQuery("name", "Xinyu_Shan")
+		rank := c.DefaultQuery("rank", "Support_Engineer")
+		team := c.DefaultQuery("team", "PaaS")
+		available := c.DefaultQuery("available", "Available")
+		position := c.DefaultQuery("position", "WFH")
+		phone := c.DefaultQuery("phone", "123546565")
+		email := c.DefaultQuery("email", "sky@microsoft.com")
+		qrcode := c.DefaultQuery("qrcode", "/home/pi/e-Paper/RaspberryPi_JetsonNano/python/pic/qrcode.png")
+		
 		cmd := exec.Command("python", 
 		"/home/pi/e-Paper/RaspberryPi_JetsonNano/python/examples/update_info.py", 
-		"--name="+name, 
-		"--level="+level, 
-		"--pos="+pos, 
-		"--email="+email, 
-		"--state="+state, 
-		"--waitfor="+waitfor, 
-		"--other="+other)	
+		"--icon="+icon,
+		"--seat="+seat,
+		"--name="+name,
+		"--rank="+rank,
+		"--team="+team,
+		"--available="+available,
+		"--position="+position,
+		"--phone="+phone,
+		"--email="+email,
+		"--qrcode="+qrcode)	
 		cmd.Run()
 		c.JSON(200, gin.H{
                         "message": "Update info successful",
