@@ -24,52 +24,72 @@ def main(argv):
         logging.info("init and Clear")
         epd.init()
         epd.Clear()
-        font24 = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 24)
-        font18 = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 18)
-        font30 = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 40)
+        font20 = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 32)
+        font40 = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 48)
+        font60 = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 64)
         
-        inputfile = ''
-        outputfile = ''
         try:
-           opts, args = getopt.getopt(argv,"",["name=","level=","pos=","email=","state=","waitfor=","other="])
+           opts, args = getopt.getopt(argv,"",["icon=", "seat=","name=","rank=","team=","available=","position=","phone=","email=","qrcode="])
         except getopt.GetoptError:
-           logging.info("info run wrong")
+           logging.info(e)
            sys.exit(2)
         
               
-        logging.info("1.Drawing on the Horizontal image...")
+        logging.info("1.Drawing with info")
         Himage = Image.new('RGB', (epd.width, epd.height), 0xffffff)  # 255: clear the frame
         draw = ImageDraw.Draw(Himage)
+        
         for opt, arg in opts:
-           if opt == '--name':
-              draw.text((10, 160), arg, font = font30, fill = epd.BLACK)
-           elif opt == '--level':
-              draw.text((10, 200), arg, font = font30, fill = epd.ORANGE)
-           elif opt == '--pos':
-              draw.text((10, 240), arg, font = font30, fill = epd.GREEN)
+           if opt == '--icon':
+              icon_pic = Image.open(arg).convert("RGBA").resize((200,200), Image.ANTIALIAS)
+              mask_pic = Image.open("/home/pi/e-Paper/RaspberryPi_JetsonNano/python/pic/mask.jpg").convert("RGBA").resize((200,200))
+              Himage.paste(icon_pic, (20, 40), mask=mask_pic) 
+           elif opt == '--seat':
+              draw.text((480,  10), arg, font = font40, fill = epd.BLACK)
+           elif opt == '--name':
+              draw.text((240,  40), arg.replace("_"," "), font = font60, fill = epd.BLACK)
+           elif opt == '--rank':
+              draw.text((240, 130), arg.replace("_"," "), font = font20, fill = epd.BLACK)
+           elif opt == '--team':
+              draw.text((240, 170), arg.replace("_"," "), font = font20, fill = epd.BLACK)
+           elif opt == '--available':
+              ava_color = epd.RED
+              if arg.lower().startswith("ava"):
+                  ava_color = epd.GREEN
+              draw.text((240, 210), arg.replace("_"," "), font = font20, fill = ava_color)
+              draw.chord((170, 200, 210, 240), 0, 360, fill = ava_color)
+              draw.chord((180, 210, 200, 230), 0, 360, fill = epd.WHITE)
+           elif opt == '--position':
+              pos_image = Image.open('/home/pi/e-Paper/RaspberryPi_JetsonNano/python/pic/site.png').convert("RGB").resize((30,30), Image.ANTIALIAS)
+              Himage.paste(pos_image, (10, 270))
+              draw.text((50, 265), arg, font = font20, fill = epd.BLACK)
+           elif opt == '--phone':
+               pic1 = Image.open('/home/pi/e-Paper/RaspberryPi_JetsonNano/python/pic/phone.png').convert("RGB").resize((30,30), Image.ANTIALIAS)
+               Himage.paste(pic1, (10, 310))
+               draw.text((50, 305), arg, font = font20, fill = epd.BLACK)
            elif opt == '--email':
-              draw.text((10, 280), arg, font = font30, fill = epd.BLUE)
-           elif opt == '--state':
-              draw.text((10, 320), arg, font = font30, fill = epd.RED)
-           elif opt == '--waitfor':
-              draw.text((10, 360), arg, font = font30, fill = epd.YELLOW)
-           elif opt == '--other':
-              draw.text((10, 400), arg.replace("_"," "), font = font30, fill = epd.BLACK)
-        draw.line((20, 50, 70, 100), fill = 0)
-        draw.line((70, 50, 20, 100), fill = 0)
-        draw.rectangle((20, 50, 70, 100), outline = 0)
-        draw.line((165, 50, 165, 100), fill = 0)
-        draw.line((140, 75, 190, 75), fill = 0)
-        draw.arc((140, 50, 190, 100), 0, 360, fill = 0)
-        draw.rectangle((80, 50, 130, 100), fill = 0)
-        draw.chord((200, 50, 250, 100), 0, 360, fill = 0)
+              email_pic = Image.open('/home/pi/e-Paper/RaspberryPi_JetsonNano/python/pic/email.png').convert("RGB").resize((30,30), Image.ANTIALIAS)
+              Himage.paste(email_pic, (10, 350))
+              draw.text((50, 345), arg, font = font20, fill = epd.BLACK)
+           elif opt == '--qrcode':
+              qr_image = Image.open(arg).convert("RGB").resize((200,200), Image.ANTIALIAS)
+              Himage.paste(qr_image, (380, 240))
         
-        pic1 = Image.open('/home/pi/e-Paper/RaspberryPi_JetsonNano/python/pic/1.64inch-1.bmp').convert("RGB").pic1 = Image.open('/home/pi/e-Paper/RaspberryPi_JetsonNano/python/pic/1.64inch-1.bmp').convert("RGB").resize((50,50), Image.ANTIALIAS)
-        Himage.paste(pic1, (300, 50))
+        # two rectangle
+        draw.rectangle((0, 250, 600, 255), outline = 0, fill = epd.YELLOW)
+        draw.rectangle((350, 255, 355, 448), outline = 0, fill = epd.YELLOW)
         
-        draw.chord((300, 150, 340, 190), 0, 360, fill = epd.GREEN)
-        draw.chord((310, 160, 330, 180), 0, 360, fill = epd.WHITE)
+        # microsoft
+        mic_image = Image.open('/home/pi/e-Paper/RaspberryPi_JetsonNano/python/pic/window.png').convert("RGB").resize((30,30), Image.ANTIALIAS)
+        Himage.paste(mic_image, (10, 420))
+        draw.text((50, 415), "Microsoft", font = font20, fill = epd.BLACK)
         
+        # synced
+        sync_pic = Image.open('/home/pi/e-Paper/RaspberryPi_JetsonNano/python/pic/sync.png').convert("RGB").resize((30,30), Image.ANTIALIAS)
+        Himage.paste(sync_pic, (550, 420))
+        draw.text((440, 415), "Synced", font = font20, fill = epd.BLACK)
+       
+        # display
         epd.display(epd.getbuffer(Himage))
         epd.sleep()
         
